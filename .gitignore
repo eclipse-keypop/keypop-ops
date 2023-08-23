@@ -1,5 +1,6 @@
 .gradle
 .idea
+build*/
 java/keypop-gradle/build
 java/keypop-gradle/lib
 java/keypop-gradle/out
