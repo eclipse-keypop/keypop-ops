@@ -1,1 +1,1 @@
-rootProject.name = "keyple-gradle"
+rootProject.name = "keypop-gradle"

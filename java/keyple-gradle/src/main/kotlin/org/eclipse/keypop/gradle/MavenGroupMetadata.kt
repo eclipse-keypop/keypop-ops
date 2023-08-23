@@ -1,4 +1,4 @@
-package org.eclipse.keyple.gradle
+package org.eclipse.keypop.gradle
 
 import javax.xml.bind.annotation.*
 

@@ -1,4 +1,4 @@
-package org.eclipse.keyple.gradle
+package org.eclipse.keypop.gradle
 
 import java.io.*
 import java.util.*

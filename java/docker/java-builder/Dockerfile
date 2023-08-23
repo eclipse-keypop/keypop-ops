@@ -1,6 +1,6 @@
 # eclipsekeyple/java-builder:2.0
 FROM openjdk:11-jdk
-LABEL maintainer Brice Ruppen <brice.ruppen@armotic.fr>, Olivier Delcroix <odelcroi@gmail.com>
+LABEL maintainer Andrei Cristea <andrei.cristea019@gmail.com>, Jean-Pierre Fortune <jean-pierre.fortune@ialto.com>
 
 # PGP installation
 RUN apt-get update \
@@ -25,39 +25,6 @@ RUN mkdir -p "/opt/gradle" \
  && rm -f "gradle.zip" \
  && echo -n "Successfully installed " \
  && gradle --version
-
-# Android installation
-ARG ANDROID_SDK_ROOT="/opt/android-sdk"
-ENV ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT}"
-ENV ANDROID_HOME="${ANDROID_SDK_ROOT}"
-ENV ANDROID_SDK="${ANDROID_SDK_ROOT}"
-RUN umask g+w \
- && curl -fLsSo commandlinetools.zip "https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip" \
- && echo -n "Files extracted: " \
- && unzip -d "${ANDROID_SDK_ROOT}" commandlinetools.zip | grep -c 'extracting:' \
- && mkdir -p "${HOME}/.android" \
- && touch "${HOME}/.android/repositories.cfg" \
- && update-alternatives --install "/usr/bin/sdkmanager" sdkmanager "${ANDROID_SDK_ROOT}/cmdline-tools/bin/sdkmanager" 1 \
- && yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses \
- && rm -rf "commandlinetools.zip"
-
-RUN umask g+w \
- && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} tools \
- && yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses
-
-RUN umask g+w \
- && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} 'build-tools;30.0.2' \
- && yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses
-
-RUN umask g+w \
- && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} 'platforms;android-30' \
- && yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses
-
-RUN echo -n "Successfully installed " \
- && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --list | sed -n '1,/Available/p' | head -n -2
-
-# GIT installation
-RUN apt-get install git-lfs
 
 # Workspace creation
 RUN umask g+w \
@@ -84,11 +51,9 @@ ENV HOME="/home/${USER}"
 ENV GRADLE_USER_HOME="/home/${USER}/.gradle"
 
 RUN umask g+w \
- && git lfs install \
  && chmod g+w ~ \
  && cd "/home/${USER}" \
- && mkdir -p ".gradle" ".android" \
- && touch ".android/repositories.cfg" \
+ && mkdir -p ".gradle" \
  && mkdir -p /home/jenkins/agent/ /home/jenkins/.gradle \
  && touch /home/jenkins/agent/gradle.properties \
  && ln -sf /home/jenkins/agent/gradle.properties /home/jenkins/.gradle/gradle.properties \
@@ -98,37 +63,12 @@ RUN umask g+w \
 RUN umask g+w \
  && mkdir gradle-wrapper \
  && cd gradle-wrapper \
- && gradle wrapper --gradle-version 5.6.4 \
- && ./gradlew -version \
  && gradle wrapper --gradle-version 6.8.3 \
  && ./gradlew -version \
  && gradle --stop \
  && cd /var/build \
  && rm -rf "/var/build/gradle-wrapper" "${GRADLE_USER_HOME}/daemon"
 
-# Pre-Download dependencies
-RUN umask g+w \
- && git clone "https://github.com/eclipse/keyple-service-java-lib.git" \
- && cd "keyple-service-java-lib" \
- && set -x \
- && ./gradlew clean build --info \
- && ./gradlew --stop \
- && export keypleVersion=$(grep version java/component/keyple-core/gradle.properties | cut -d= -f2 | tr -d "[:space:]") \
- && echo "Working with keyple-service-java-lib $keypleVersion" \
- && cd /var/build \
- && rm -rf "keyple-service-java-lib" "${GRADLE_USER_HOME}/daemon" "${GRADLE_USER_HOME}/caches"/jars*/*/*keyple* "${GRADLE_USER_HOME}/caches"/modules-2/files-2.1/org.eclipse.keyple \
- && find "${GRADLE_USER_HOME}/caches" -type f -executable -exec chmod g+x {} +
-
-RUN umask g+w \
- && git clone "https://github.com/eclipse/keyple-plugin-android-nfc-java-lib.git" \
- && cd "keyple-plugin-android-nfc-java-lib" \
- && set -x \
- && ./gradlew clean build --info \
- && ./gradlew --stop \
- && cd /var/build \
- && rm -rf "keyple-plugin-android-nfc-java-lib" "${GRADLE_USER_HOME}/daemon" "${GRADLE_USER_HOME}/caches"/jars*/*/*keyple* "${GRADLE_USER_HOME}/caches"/modules-2/files-2.1/org.eclipse.keyple \
- && find "${GRADLE_USER_HOME}/caches" -type f -executable -exec chmod g+x {} +
-
 ENTRYPOINT [ "/usr/local/bin/uid_entrypoint" ]
 
-LABEL version 2
+LABEL version 1

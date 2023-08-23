@@ -2,8 +2,8 @@
 pipeline {
     agent {
         kubernetes {
-            label 'keyple-gradle'
-            yaml javaBuilder('2.0')
+            label 'keypop-gradle'
+            yaml javaBuilder('1.0')
         }
     }
     stages {
@@ -11,15 +11,15 @@ pipeline {
             steps{
                 container('java-builder') {
                     script {
-                        keypleGradleVersion = sh(script: 'grep "^version" java/keyple-gradle/gradle.properties | cut -d= -f2 | tr -d "[:space:]"', returnStdout: true).trim()
-                        deployKeypleGradle = env.GIT_URL == 'https://github.com/eclipse/keyple-ops.git' && env.GIT_BRANCH == "master" && env.CHANGE_ID == null
+                        keypopGradleVersion = sh(script: 'grep "^version" java/keypop-gradle/gradle.properties | cut -d= -f2 | tr -d "[:space:]"', returnStdout: true).trim()
+                        deployKeypopGradle = env.GIT_URL == 'https://github.com/eclipse-keypop/keypop-ops.git' && env.GIT_BRANCH == "main" && env.CHANGE_ID == null
                     }
                 }
             }
         }
         stage('Import keyring'){
             when {
-                expression { deployKeypleGradle }
+                expression { deployKeypopGradle }
             }
             steps{
                 container('java-builder') {
@@ -29,51 +29,51 @@ pipeline {
                 }
             }
         }
-        stage('Keyple Gradle Plugin: Build and test') {
+        stage('Keypop Gradle Plugin: Build and test') {
             steps{
                 container('java-builder') {
                     configFileProvider(
                         [configFile(
                             fileId: 'gradle.properties',
                             targetLocation: '/home/jenkins/agent/gradle.properties')]) {
-                        dir('java/keyple-gradle') {
+                        dir('java/keypop-gradle') {
                             sh './gradlew clean assemble --info --stacktrace'
                         }
                         catchError(buildResult: 'UNSTABLE', message: 'There were failing tests.', stageResult: 'UNSTABLE') {
-                            dir('java/keyple-gradle') {
+                            dir('java/keypop-gradle') {
                                 sh './gradlew test --info --stacktrace'
                             }
                         }
-                        junit allowEmptyResults: true, testResults: 'java/keyple-gradle/build/test-results/test/*.xml'
+                        junit allowEmptyResults: true, testResults: 'java/keypop-gradle/build/test-results/test/*.xml'
                     }
                 }
             }
         }
-        stage('Keyple Gradle Plugin: Upload to sonatype') {
+        stage('Keypop Gradle Plugin: Upload to sonatype') {
             when {
-                expression { deployKeypleGradle }
+                expression { deployKeypopGradle }
             }
             steps{
                 container('java-builder') {
                     configFileProvider([configFile(
                             fileId: 'gradle.properties',
                             targetLocation: '/home/jenkins/agent/gradle.properties')]) {
-                        dir('java/keyple-gradle') {
+                        dir('java/keypop-gradle') {
                             sh './gradlew publish --info --stacktrace'
                         }
                     }
                 }
             }
         }
-        stage('Keyple Gradle Plugin: Code Quality') {
+        stage('Keypop Gradle Plugin: Code Quality') {
             when {
-                expression { deployKeypleGradle }
+                expression { deployKeypopGradle }
             }
             steps {
                 catchError(buildResult: 'SUCCESS', message: 'Unable to log code quality to Sonar.', stageResult: 'FAILURE') {
                     container('java-builder') {
                         withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_LOGIN')]) {
-                            dir('java/keyple-gradle') {
+                            dir('java/keypop-gradle') {
                                 sh './gradlew sonarqube --info --stacktrace'
                             }
                         }

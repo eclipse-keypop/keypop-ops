@@ -1,11 +1,10 @@
-package org.eclipse.keyple.gradle
+package org.eclipse.keypop.gradle
 
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.dsl.RepositoryHandler
-import org.gradle.api.artifacts.repositories.ArtifactRepository
 import org.gradle.api.logging.Logger
 import org.gradle.api.plugins.ExtensionContainer
 import org.gradle.api.plugins.PluginContainer
@@ -16,10 +15,9 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import java.io.File
 import java.nio.charset.Charset
-import java.util.*
 
 
-internal class KeyplePluginTest {
+internal class KeypopPluginTest {
 
     private lateinit var project: Project
     private val tasks = HashMap<String, Task>()
@@ -45,7 +43,7 @@ internal class KeyplePluginTest {
         doReturn(properties).`when`(project).properties
         val repositories = mock(RepositoryHandler::class.java)
         doReturn(repositories).`when`(project).repositories
-        doReturn("org.eclipse.keyple").`when`(project).group
+        doReturn("org.eclipse.keypop").`when`(project).group
 
         val logger = mock(Logger::class.java)
         doReturn(logger).`when`(project).logger
@@ -68,7 +66,7 @@ internal class KeyplePluginTest {
 
     @Test
     fun tasksAreCorrectlyInserted() {
-        val plugin = KeyplePlugin()
+        val plugin = KeypopPlugin()
 
         plugin.apply(project)
 
@@ -77,23 +75,11 @@ internal class KeyplePluginTest {
 
         verify(tasks["setVersion"]!!)
             .doFirst(any<Action<Task>>())
-
-        verify(project)
-            .task("getLastAlphaVersion")
-
-        verify(tasks["getLastAlphaVersion"]!!)
-            .doFirst(any<Action<Task>>())
-
-        verify(project)
-            .task("setNextAlphaVersion")
-
-        verify(tasks["setNextAlphaVersion"]!!)
-            .doFirst(any<Action<Task>>())
     }
 
     @Test
     fun setVersion_withEmptyProperties() {
-        val plugin = KeyplePlugin()
+        val plugin = KeypopPlugin()
         plugin.apply(project)
         val task = tasks["setVersion"]!!
         val file = File.createTempFile("test", "gradle.properties")
@@ -114,7 +100,7 @@ internal class KeyplePluginTest {
 
     @Test
     fun setVersion_withExistingProperties() {
-        val plugin = KeyplePlugin()
+        val plugin = KeypopPlugin()
         plugin.apply(project)
         val task = tasks["setVersion"]!!
         val file = File.createTempFile("test", "gradle.properties")
@@ -142,28 +128,5 @@ internal class KeyplePluginTest {
                 "version = 2.0.0",
                 "second = 2"
             )
-    }
-
-    @Test
-    fun getLastAlphaVersion() {
-        val plugin = KeyplePlugin()
-        plugin.apply(project)
-        val task = tasks["getLastAlphaVersion"]!!
-        doReturn("0.9.0")
-            .`when`(project).version
-
-        plugin.getLastAlphaVersion(task)
-    }
-
-    @Test
-    fun setNextAlphaVersion() {
-        val plugin = KeyplePlugin()
-        plugin.apply(project)
-        doReturn("0.9.0")
-            .`when`(project).version
-
-        plugin.setNextAlphaVersion(tasks["setNextAlphaVersion"]!!)
-
-        verify(project).version = "0.9.0-alpha-3"
     }
 }

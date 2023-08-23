@@ -1,6 +1,6 @@
-package org.eclipse.keyple.gradle
+package org.eclipse.keypop.gradle
 
-import org.eclipse.keyple.gradle.pom.YamlToPom
+import org.eclipse.keypop.gradle.pom.YamlToPom
 import org.gradle.api.*
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.publish.PublishingExtension
@@ -32,13 +32,13 @@ fun <R> read(instance: Any, propertyName: String): R {
  * Use `./gradlew publish` to publish snapshot to maven central
  * Use `./gradlew release` to publish release to maven central
  */
-class KeyplePlugin : Plugin<Project> {
+class KeypopPlugin : Plugin<Project> {
 
-    val versioning = KeypleVersioning()
+    val versioning = KeypopVersioning()
 
     override fun apply(project: Project) {
         versioning.init(project)
-        println("Using Keyple Gradle ${javaClass.`package`.implementationVersion} for ${project.displayName}.")
+        println("Using Keypop Gradle ${javaClass.`package`.implementationVersion} for ${project.displayName}.")
         versioning.snapshotProject(project)
         setupTasks(project)
         setupLicense(project)
@@ -49,12 +49,12 @@ class KeyplePlugin : Plugin<Project> {
         project.plugins.apply("maven-publish")
         project.tasks.findByName("javadoc")?.doFirst { javadoc ->
             javadoc as Javadoc
-            val stylesheet = File(project.buildDir, "keyple-stylesheet.css")
+            val stylesheet = File(project.buildDir, "keypop-stylesheet.css")
             stylesheet.outputStream().use {
-                javaClass.getResourceAsStream("javadoc/keyple-stylesheet.css")?.copyTo(it)
+                javaClass.getResourceAsStream("javadoc/keypop-stylesheet.css")?.copyTo(it)
             }
             val javadocLogo = project.prop("javadoc.logo")
-                ?: "<a target=\"_parent\" href=\"https://keyple.org/\"><img src=\"https://keyple.org/docs/api-reference/java-api/keyple-java-core/1.0.0/images/keyple.png\" height=\"20px\" style=\"background-color: white; padding: 3px; margin: 0 10px -7px 3px;\"/></a>"
+                ?: "<a target=\"_parent\" href=\"https://keypop.org/\"><img src=\"https://keypop.org/media/logo.svg\" height=\"20px\" style=\"background-color: white; padding: 3px; margin: 0 10px -7px 3px;\"/></a>"
             val javadocCopyright = project.prop("javadoc.copyright")
                 ?: "Copyright &copy; Eclipse Foundation, Inc. All Rights Reserved."
             javadoc.options {
@@ -126,7 +126,7 @@ class KeyplePlugin : Plugin<Project> {
                         }
                     project.extensions.findByType(PublishingExtension::class.java)
                         ?.repositories
-                        ?.first { it.name == "keypleRepo" }
+                        ?.first { it.name == "keypopRepo" }
                         ?.let { it as MavenArtifactRepository }
                         ?.apply { url = project.uri(versioning.stagingRepo) }
                 }
@@ -135,13 +135,6 @@ class KeyplePlugin : Plugin<Project> {
 
         project.task("setVersion")
             .doFirst(this::setVersion)
-
-        project.task("getLastAlphaVersion")
-            .doFirst(this::getLastAlphaVersion)
-
-        project.task("setNextAlphaVersion")
-            .doFirst(this::setNextAlphaVersion)
-            .finalizedBy("setVersion")
     }
 
     private fun setupLicense(project: Project) {
@@ -198,26 +191,6 @@ class KeyplePlugin : Plugin<Project> {
         }
 
         println("Setting new version for ${task.project.name} to $version")
-    }
-
-    /**
-     * Prints to console the last alpha released version found on Maven Central
-     * Usage: ./gradlew getLastAlphaVersion
-     */
-    fun getLastAlphaVersion(task: Task) {
-        val lastVersion = versioning
-            .getLastAlphaVersionFrom(task.project.version as String)
-        println("Looking for alpha in ${task.project.version}, found: $lastVersion")
-    }
-
-    /**
-     * Sets the next alpha version to be released based on last one found on Maven Central
-     * Usage: ./gradlew setNextAlphaVersion
-     */
-    fun setNextAlphaVersion(task: Task) {
-        val nextVersion = versioning
-            .getNextAlphaVersionFrom(task.project.version as String)
-        task.project.version = nextVersion
     }
 
     fun configurePublishing(project: Project): Action<PublishingExtension> {
@@ -278,7 +251,7 @@ class KeyplePlugin : Plugin<Project> {
                     }
                 }
             extension.repositories.maven { maven ->
-                maven.name = "keypleRepo"
+                maven.name = "keypopRepo"
                 maven.credentials {
                     project.prop("ossrhUsername")?.let(it::setUsername)
                     project.prop("ossrhPassword")?.let(it::setPassword)

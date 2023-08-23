@@ -1,9 +1,9 @@
-package org.eclipse.keyple.gradle.pom
+package org.eclipse.keypop.gradle.pom
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import org.eclipse.keyple.gradle.title
+import org.eclipse.keypop.gradle.title
 import org.gradle.api.Project
 import org.gradle.api.publish.maven.MavenPom
 import java.io.Closeable

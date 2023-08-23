@@ -1,4 +1,4 @@
-package org.eclipse.keyple.gradle.pom
+package org.eclipse.keypop.gradle.pom
 
 data class PomRoot(
     val description: String?,

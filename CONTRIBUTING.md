@@ -1,12 +1,12 @@
-# Contributing to 'Eclipse Keyple' OPS
+# Contributing to 'Eclipse Keypop' OPS
 
 Thanks for your interest in this project.
 
 ## Project description
 
-'Eclipse Keyple' OPS is a project containing all the Ops settings of the '[Eclipse Keyple](https://keyple.org/)' project.
+'Eclipse Keypop' OPS is a project containing all the Ops settings of the '[Eclipse Keypop](https://keypop.org/)' project.
 
-* https://github.com/eclipse/keyple-ops
+* https://github.com/eclipse-keypop/keypop-ops
 
 ## Eclipse Contributor Agreement
 

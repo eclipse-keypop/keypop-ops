@@ -1,12 +1,12 @@
-# Notices for 'Eclipse Keyple' OPS
+# Notices for 'Eclipse Keypop' OPS
 
-This content is produced and maintained by the Eclipse Keyple project.
+This content is produced and maintained by the Eclipse Keypop project.
 
-* Project home: https://projects.eclipse.org/projects/iot.keyple
+* Project home: https://projects.eclipse.org/projects/iot.keypop
 
 ## Trademarks
 
-* Eclipse Keyple and the Eclipse Keyple project are Trademarks of the Eclipse Foundation, Inc.
+* Eclipse Keypop and the Eclipse Keypop project are Trademarks of the Eclipse Foundation, Inc.
 * Eclipse® is a Trademark of the Eclipse Foundation, Inc.
 * Eclipse Foundation is a Trademark of the Eclipse Foundation, Inc.
 
@@ -23,15 +23,5 @@ of the Eclipse Public License v. 2.0 which is available at
 http://www.eclipse.org/legal/epl-2.0.
 
 SPDX-License-Identifier: EPL-2.0
-
-## Source Code
-
-The project maintains the following source code repositories:
-
-* https://github.com/eclipse/keyple
-* https://github.com/eclipse/keyple-website
-* https://github.com/eclipse/keyple-java
-* https://github.com/eclipse/keyple-cpp
-* https://github.com/eclipse/keyple-ops
 
 ## Third-party Content

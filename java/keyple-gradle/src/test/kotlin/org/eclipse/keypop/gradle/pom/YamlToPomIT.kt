@@ -1,8 +1,8 @@
-package org.eclipse.keyple.gradle.pom
+package org.eclipse.keypop.gradle.pom
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
-import org.eclipse.keyple.gradle.title
+import org.eclipse.keypop.gradle.title
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.XmlProvider

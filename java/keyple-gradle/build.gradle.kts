@@ -9,7 +9,6 @@ plugins {
     jacoco
     id("org.sonarqube") version "3.0"
     `maven-publish`
-//    `java-gradle-plugin`
 }
 
 buildscript {
@@ -43,15 +42,6 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.15.0")
     testImplementation("org.mockito:mockito-core:3.5.10")
 }
-
-//gradlePlugin {
-//    plugins {
-//        create("keyple-gradle") {
-//            id = "org.eclipse.keyple"
-//            implementationClass = "org.eclipse.keyple.gradle.KeyplePlugin"
-//        }
-//    }
-//}
 
 val compileKotlin: KotlinCompile by tasks
 val compileTestKotlin: KotlinCompile by tasks
@@ -143,7 +133,7 @@ tasks {
     }
     sonarqube {
         properties {
-            property("sonar.projectKey", "eclipse_keyple-gradle")
+            property("sonar.projectKey", "eclipse_keypop-gradle")
             property("sonar.organization", "eclipse")
             property("sonar.host.url", "https://sonarcloud.io")
             property("sonar.login", System.getenv("SONAR_LOGIN"))
@@ -158,12 +148,12 @@ publishing {
             artifact(sourcesJar)
             artifact(javadocJar)
             pom {
-                name.set("Keyple Gradle Plugin")
-                description.set("Gradle Plugin that regroups common tasks used by all Keyple Projects.")
-                url.set("https://projects.eclipse.org/projects/iot.keyple")
+                name.set("Keypop Gradle Plugin")
+                description.set("Gradle Plugin that regroups common tasks used by all Keypop Projects.")
+                url.set("https://projects.eclipse.org/projects/iot.keypop")
                 organization {
-                    name.set("Eclipse Keyple")
-                    url.set("https://projects.eclipse.org/projects/iot.keyple")
+                    name.set("Eclipse Keypop")
+                    url.set("https://projects.eclipse.org/projects/iot.keypop")
                 }
                 licenses {
                     license {
@@ -174,18 +164,18 @@ publishing {
                 }
                 developers {
                     developer {
-                        name.set("Olivier Delcroix")
-                        email.set("odelcroi@gmail.com")
+                        name.set("Andrei Cristea")
+                        email.set("andrei.cristea019@gmail.com")
                     }
                     developer {
-                        name.set("Brice Ruppen")
-                        email.set("brice.ruppen@armotic.fr")
+                        name.set("Jean-Pierre Fortune")
+                        email.set("jean-pierre.fortune@ialto.com")
                     }
                 }
                 scm {
-                    connection.set("scm:git:git://github.com/eclipse/keyple-ops.git")
-                    developerConnection.set("scm:git:https://github.com/eclipse/keyple-ops.git")
-                    url.set("http://github.com/eclipse/keyple-ops/tree/master")
+                    connection.set("scm:git:git://github.com/eclipse-keypop/keypop-ops.git")
+                    developerConnection.set("scm:git:https://github.com/eclipse-keypop/keypop-ops.git")
+                    url.set("http://github.com/eclipse-keypop/keypop-ops/tree/master")
                 }
             }
         }

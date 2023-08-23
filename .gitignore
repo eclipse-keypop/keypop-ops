@@ -1,6 +1,6 @@
 .gradle
 .idea
-java/keyple-gradle/build
-java/keyple-gradle/lib
-java/keyple-gradle/out
-java/keyple-gradle/gradle/license_header.txt
+java/keypop-gradle/build
+java/keypop-gradle/lib
+java/keypop-gradle/out
+java/keypop-gradle/gradle/license_header.txt
