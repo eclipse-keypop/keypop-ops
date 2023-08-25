@@ -157,8 +157,8 @@ publishing {
                 }
                 licenses {
                     license {
-                        name.set("Eclipse Public License - v 2.0")
-                        url.set("https://www.eclipse.org/legal/epl-2.0/")
+                        name.set("MIT License")
+                        url.set("https://opensource.org/license/mit/")
                         distribution.set("repo")
                     }
                 }
@@ -175,7 +175,7 @@ publishing {
                 scm {
                     connection.set("scm:git:git://github.com/eclipse-keypop/keypop-ops.git")
                     developerConnection.set("scm:git:https://github.com/eclipse-keypop/keypop-ops.git")
-                    url.set("http://github.com/eclipse-keypop/keypop-ops/tree/master")
+                    url.set("http://github.com/eclipse-keypop/keypop-ops/tree/main")
                 }
             }
         }
