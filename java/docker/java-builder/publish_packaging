@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+
+mkdir ./repository
+find . -path "*build/libs/*.jar" -exec cp {} ./repository \;
+echo -n "Packaging: "
+ls -R ./repository
+
+VERSION_TYPE='releases'
+
+for file in ./repository/*-SNAPSHOT*; do
+    VERSION_TYPE='snapshots'
+done
+
+ssh genie.keypop@projects-storage.eclipse.org rm -rf "/home/data/httpd/download.eclipse.org/keypop/${VERSION_TYPE}"
+ssh genie.keypop@projects-storage.eclipse.org mkdir -p "/home/data/httpd/download.eclipse.org/keypop/${VERSION_TYPE}"
+scp -r ./repository/* genie.keypop@projects-storage.eclipse.org:"/home/data/httpd/download.eclipse.org/keypop/${VERSION_TYPE}"
