@@ -1,4 +1,4 @@
-# eclipsekeyple/java-builder:2.0
+# eclipsekeypop/java-builder:2.0
 FROM openjdk:11-jdk
 LABEL maintainer Andrei Cristea <andrei.cristea019@gmail.com>, Jean-Pierre Fortune <jean-pierre.fortune@ialto.com>
 
