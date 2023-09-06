@@ -16,7 +16,7 @@ a:link, a:visited {
 }
 a:hover, a:focus {
     text-decoration:none;
-    color:#bb7a2a;
+    color:#039EFD ;
     font-weight: bold;
 }
 a:active {
@@ -107,7 +107,7 @@ Document title and Copyright styles
     text-decoration:none;
 }
 .bar a:hover, .bar a:focus {
-    color:#bb7a2a;
+    color:#039EFD ;
 }
 .tab {
     background-color:#0066FF;
@@ -120,7 +120,7 @@ Document title and Copyright styles
 Navigation bar styles
 */
 .bar {
-    background-color:#1D87BB;
+    background-color:#EB6608;
     color:#FFFFFF;
     padding:.8em .5em .4em .8em;
     height:auto;/*height:1.8em;*/
@@ -128,8 +128,8 @@ Navigation bar styles
     margin:0;
 }
 .topNav {
-    background-color:#1D87BB;
-    color:#FFFFFF;
+    background-color:#EB6608;
+    color: #000000;
     float:left;
     padding:0;
     width:100%;
@@ -137,12 +137,12 @@ Navigation bar styles
     height:2.8em;
     padding-top:10px;
     overflow:hidden;
-    font-size:12px; 
+    font-size:12px;
 }
 .bottomNav {
     margin-top:10px;
-    background-color:#1D87BB;
-    color:#FFFFFF;
+    background-color:#EB6608;
+    color: #000000;
     float:left;
     padding:0;
     width:100%;
@@ -181,18 +181,18 @@ ul.subNavList li{
     float:left;
 }
 .topNav a:link, .topNav a:active, .topNav a:visited, .bottomNav a:link, .bottomNav a:active, .bottomNav a:visited {
-    color:#FFFFFF;
+    color: #000000;
     text-decoration:none;
     text-transform:uppercase;
 }
 .topNav a:hover, .bottomNav a:hover {
     text-decoration:none;
-    color:#bb7a2a;
+    color: #039EFD ;
     text-transform:uppercase;
 }
 .navBarCell1Rev {
-    background-color:#F8981D;
-    color:#253441;
+    background-color:#039EFD ;
+    color: #ffffff;
     margin: auto 5px;
 }
 .skipNav {
@@ -336,7 +336,7 @@ ul.blockList li.blockList, ul.blockListLast li.blockList {
 }
 ul.blockList ul.blockList li.blockList, ul.blockList ul.blockListLast li.blockList {
     padding:0px 20px 5px 10px;
-    border:1px solid #ededed; 
+    border:1px solid #ededed;
     background-color:#f8f8f8;
 }
 ul.blockList ul.blockList ul.blockList li.blockList, ul.blockList ul.blockList ul.blockListLast li.blockList {
@@ -364,9 +364,9 @@ Table styles
 */
 .overviewSummary, .memberSummary, .typeSummary, .useSummary, .constantsSummary, .deprecatedSummary {
     width:100%;
-    border-left:1px solid #EEE; 
-    border-right:1px solid #EEE; 
-    border-bottom:1px solid #EEE; 
+    border-left:1px solid #EEE;
+    border-right:1px solid #EEE;
+    border-bottom:1px solid #EEE;
 }
 .overviewSummary, .memberSummary  {
     padding:0px;
@@ -376,7 +376,7 @@ Table styles
     position:relative;
     text-align:left;
     background-repeat:no-repeat;
-    color:#253441;
+    color: #ffffff;
     font-weight:bold;
     clear:none;
     overflow:hidden;
@@ -405,7 +405,7 @@ Table styles
     padding-bottom:7px;
     display:inline-block;
     float:left;
-    background-color:#F8981D;
+    background-color:#039EFD ;
     border: none;
     height:16px;
 }
@@ -417,7 +417,7 @@ Table styles
     margin-right:3px;
     display:inline-block;
     float:left;
-    background-color:#F8981D;
+    background-color:#039EFD ;
     height:16px;
 }
 .memberSummary caption span.tableTab span {
@@ -428,7 +428,7 @@ Table styles
     margin-right:3px;
     display:inline-block;
     float:left;
-    background-color:#1D87BB;
+    background-color:#EB6608;
     height:16px;
 }
 .memberSummary caption span.tableTab, .memberSummary caption span.activeTableTab {
@@ -445,22 +445,22 @@ Table styles
     width:5px;
     position:relative;
     float:left;
-    background-color:#F8981D;
+    background-color:#039EFD ;
 }
 .memberSummary .activeTableTab .tabEnd {
     display:none;
     width:5px;
     margin-right:3px;
-    position:relative; 
+    position:relative;
     float:left;
-    background-color:#F8981D;
+    background-color:#039EFD ;
 }
 .memberSummary .tableTab .tabEnd {
     display:none;
     width:5px;
     margin-right:3px;
     position:relative;
-    background-color:#1D87BB;
+    background-color:#EB6608;
     float:left;
 
 }
