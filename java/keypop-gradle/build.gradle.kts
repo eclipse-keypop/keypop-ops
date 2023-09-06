@@ -6,8 +6,6 @@ import java.io.IOException
 plugins {
     kotlin("jvm") version "1.3.61"
     signing
-    jacoco
-    id("org.sonarqube") version "3.0"
     `maven-publish`
 }
 
@@ -120,23 +118,6 @@ tasks {
         useJUnitPlatform()
         testLogging {
             events("passed", "skipped", "failed")
-        }
-        finalizedBy("jacocoTestReport")
-    }
-    jacocoTestReport {
-        dependsOn("test")
-        reports {
-            xml.isEnabled = true
-            csv.isEnabled = false
-            html.isEnabled = true
-        }
-    }
-    sonarqube {
-        properties {
-            property("sonar.projectKey", "eclipse_keypop-gradle")
-            property("sonar.organization", "eclipse")
-            property("sonar.host.url", "https://sonarcloud.io")
-            property("sonar.login", System.getenv("SONAR_LOGIN"))
         }
     }
 }

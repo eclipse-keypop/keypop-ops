@@ -65,21 +65,5 @@ pipeline {
                 }
             }
         }
-        stage('Keypop Gradle Plugin: Code Quality') {
-            when {
-                expression { deployKeypopGradle }
-            }
-            steps {
-                catchError(buildResult: 'SUCCESS', message: 'Unable to log code quality to Sonar.', stageResult: 'FAILURE') {
-                    container('java-builder') {
-                        withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_LOGIN')]) {
-                            dir('java/keypop-gradle') {
-                                sh './gradlew sonarqube --info --stacktrace'
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 }
