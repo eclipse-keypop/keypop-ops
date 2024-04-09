@@ -1,6 +1,6 @@
 def call(String version) {
   imagePullPolicy = "IfNotPresent"
-  if (version == '1.0') version = '1.0'
+  if (version == '1.0') version = '1.1'
   if (version.endsWith('!')) {
     version = version.substring(0, version.length() - 1);
     imagePullPolicy = "Always"

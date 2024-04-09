@@ -49,10 +49,6 @@ class KeypopPlugin : Plugin<Project> {
         project.plugins.apply("maven-publish")
         project.tasks.findByName("javadoc")?.doFirst { javadoc ->
             javadoc as Javadoc
-            val stylesheet = File(project.buildDir, "keypop-stylesheet.css")
-            stylesheet.outputStream().use {
-                javaClass.getResourceAsStream("javadoc/keypop-stylesheet.css")?.copyTo(it)
-            }
             val javadocLogo = project.prop("javadoc.logo")
                 ?: "<a target=\"_parent\" href=\"https://keypop.org/\"><img src=\"https://keypop.org/media/logo.svg\" height=\"20px\" style=\"background-color: white; padding: 3px; margin: 0 10px -7px 3px;\"/></a>"
             val javadocCopyright = project.prop("javadoc.copyright")
@@ -60,19 +56,10 @@ class KeypopPlugin : Plugin<Project> {
             javadoc.options {
                 it.overview = "src/main/javadoc/overview.html"
                 it.windowTitle = project.title + " - " + project.version
-                it.header("${javadocLogo}<span style=\"line-height: 30px\"> ${project.title} - ${project.version}</span>")
+                it.header("<div style=\"margin-top: 7px\">${javadocLogo} ${project.title} - ${project.version}</div>")
                     .docTitle(project.title + " - " + project.version)
                     .use(true)
-                    .stylesheetFile(stylesheet)
-                    .footer(javadocCopyright)
-                    .apply {
-                        if ((System.getProperty("java.version")
-                                ?.split('.', limit = 2)
-                                ?.get(0)?.toInt() ?: 0) >= 11
-                        ) {
-                            addBooleanOption("-no-module-directories", true)
-                        }
-                    }
+                    .bottom(javadocCopyright)
             }
         }
         project.tasks.findByName("jar")?.doFirst { jar ->
@@ -213,14 +200,14 @@ class KeypopPlugin : Plugin<Project> {
                 }
             project.components.findByName("release")
                 ?.let { release ->
-                    val releaseSourceJar =
+                    val releaseSrcJar =
                         project.extensions.findByName("android")
                             ?.let { read<NamedDomainObjectContainer<Any>>(it, "sourceSets") }
                             ?.findByName("main")
                             ?.let { read<Any>(it, "java") }
                             ?.let { read<Set<File>>(it, "srcDirs") }
                             ?.let { main ->
-                                project.tasks.create("releaseSourcesJar", Jar::class.java) {
+                                project.tasks.create("releaseSrcJar", Jar::class.java) {
                                     it.archiveClassifier.set("sources")
                                     it.from(main)
                                 }
@@ -239,7 +226,7 @@ class KeypopPlugin : Plugin<Project> {
                         MavenPublication::class.java
                     ) { publication ->
                         publication.from(release)
-                        releaseSourceJar?.let { publication.artifact(it) }
+                        releaseSrcJar?.let { publication.artifact(it) }
                         releaseDocJar?.let { publication.artifact(it) }
                         project.prop("archivesBaseName")
                             ?.let { publication.artifactId = it }
