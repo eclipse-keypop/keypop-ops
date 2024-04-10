@@ -50,7 +50,7 @@ class KeypopPlugin : Plugin<Project> {
         project.tasks.findByName("javadoc")?.doFirst { javadoc ->
             javadoc as Javadoc
             val javadocLogo = project.prop("javadoc.logo")
-                ?: "<a target=\"_parent\" href=\"https://keypop.org/\"><img src=\"https://keypop.org/media/logo.svg\" height=\"20px\" style=\"background-color: white; padding: 3px; margin: 0 10px -7px 3px;\"/></a>"
+                ?: "<a target=\"_parent\" href=\"https://keypop.org/\"><img src=\"https://keypop.org/media/logo-bg-white.svg\" height=\"20px\" style=\"background-color: white; padding: 3px; margin: 0 10px -7px 3px;\"/></a>"
             val javadocCopyright = project.prop("javadoc.copyright")
                 ?: "Copyright &copy; Eclipse Foundation, Inc. All Rights Reserved."
             javadoc.options {
