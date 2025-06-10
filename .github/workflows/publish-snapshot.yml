@@ -25,15 +25,23 @@ jobs:
         run: |
           mkdir -p ~/.gradle
           cat << EOF > ~/.gradle/gradle.properties
-          signing.keyId=${{ secrets.GPG_KEY_ID }}
-          signing.password=${{ secrets.GPG_PASSPHRASE }}
           sonatypeUsername=${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
           sonatypePassword=${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
+          signingInMemoryKey=${{ secrets.GPG_PRIVATE_KEY }}
+          signingInMemoryKeyId=${{ secrets.GPG_KEY_ID }}
+          signingInMemoryKeyPassword=${{ secrets.GPG_PASSPHRASE }}
+          EOF
+          # Also create in project directory to ensure it's found
+          cat << EOF > java/keypop-gradle/gradle.properties
+          sonatypeUsername=${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
+          sonatypePassword=${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
+          signingInMemoryKey=${{ secrets.GPG_PRIVATE_KEY }}
+          signingInMemoryKeyId=${{ secrets.GPG_KEY_ID }}
+          signingInMemoryKeyPassword=${{ secrets.GPG_PASSPHRASE }}
           EOF
 
-      - name: Setup GPG for in-memory signing
-        run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+      - name: Setup GPG (not needed for in-memory signing)
+        run: echo "Using in-memory GPG signing"
 
       - name: Update permissions
         run: chmod +x ./gradlew
