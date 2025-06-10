@@ -24,6 +24,7 @@ jobs:
           cat << EOF > ~/.gradle/gradle.properties
           signing.keyId=${{ secrets.GPG_KEY_ID }}
           signing.password=${{ secrets.GPG_PASSPHRASE }}
+          sonatypeURL="https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
           sonatypeUsername=${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
           sonatypePassword=${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
           EOF
