@@ -27,15 +27,13 @@ jobs:
           cat << EOF > ~/.gradle/gradle.properties
           signing.keyId=${{ secrets.GPG_KEY_ID }}
           signing.password=${{ secrets.GPG_PASSPHRASE }}
-          signing.secretKeyRingFile=\$HOME/.gradle/maven-central.gpg
           sonatypeUsername=${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
           sonatypePassword=${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
           EOF
 
-      - name: Install gpg secret key
+      - name: Setup GPG for in-memory signing
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-          gpg --batch --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" --export-secret-keys > ~/.gradle/maven-central.gpg
 
       - name: Update permissions
         run: chmod +x ./gradlew
