@@ -143,8 +143,8 @@ publishing {
                 }
                 licenses {
                     license {
-                        name.set("MIT License")
-                        url.set("https://opensource.org/license/mit/")
+                        name.set("Eclipse Public License - v 2.0")
+                        url.set("https://www.eclipse.org/legal/epl-2.0/")
                         distribution.set("repo")
                     }
                 }

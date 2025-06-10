@@ -1,6 +1,7 @@
 package org.eclipse.keypop.gradle
 
 import java.io.File
+import java.util.jar.JarFile
 import kotlin.reflect.KProperty1
 import org.eclipse.keypop.gradle.pom.YamlToPom
 import org.gradle.api.*
@@ -110,19 +111,78 @@ class KeypopPlugin : Plugin<Project> {
     }
 
     project.task("setVersion").doFirst(this::setVersion)
+
+    project.task("listAvailableLicenses").apply {
+      group = "documentation"
+      description = "Lists the available license types for 'licenseType'."
+      doLast {
+        val licenses = getAvailableLicenseTypes()
+        if (licenses.isEmpty()) {
+          println("No license files found in resources.")
+        } else {
+          println("Available license types for 'licenseType':")
+          licenses.forEach { println(" - $it") }
+        }
+      }
+    }
+  }
+
+  private fun getAvailableLicenseTypes(): List<String> {
+    val prefix = "LICENSE_HEADER_"
+    val resourcePath = "org/eclipse/keyple/gradle/"
+    val result = mutableSetOf<String>()
+
+    val url = javaClass.classLoader.getResource(resourcePath)
+    if (url != null) {
+      if (url.protocol == "file") {
+        val dir = File(url.toURI())
+        dir.listFiles()?.forEach { file ->
+          if (file.name.startsWith(prefix)) {
+            result.add(file.name.removePrefix(prefix))
+          }
+        }
+      } else if (url.protocol == "jar") {
+        val path = url.path
+        val jarPath = path.substringAfter("file:").substringBefore("!")
+        JarFile(File(jarPath)).use { jar ->
+          jar.entries().iterator().forEach { entry ->
+            val name = entry.name
+            if (name.startsWith(resourcePath + prefix)) {
+              val type = name.removePrefix(resourcePath + prefix)
+              result.add(type)
+            }
+          }
+        }
+      }
+    }
+
+    return result.sorted()
   }
 
   private fun setupLicense(project: Project) {
+    val type = project.findProperty("licenseType")?.toString()?.uppercase() ?: "MIT"
+    val headerResourceName = "LICENSE_HEADER_$type"
+
     val licenseHeaderParent = project.rootDir
-    licenseHeaderParent.mkdirs()
     val licenseHeader = File(licenseHeaderParent, "LICENSE_HEADER")
+
     if (!licenseHeader.isFile) {
-      println("Creating licenseHeader in: $licenseHeader")
-      project.logger.info("Creating licenseHeader in: $licenseHeader")
+      println("Creating licenseHeader in: $licenseHeader from $headerResourceName")
+      project.logger.info("Creating licenseHeader in: $licenseHeader from $headerResourceName")
       licenseHeader.createNewFile()
       licenseHeader.setExecutable(false)
     }
-    licenseHeader.outputStream().use { javaClass.getResourceAsStream("LICENSE_HEADER")?.copyTo(it) }
+
+    val inputStream = javaClass.getResourceAsStream(headerResourceName)
+    if (inputStream != null) {
+      licenseHeader.outputStream().use { output -> inputStream.copyTo(output) }
+    } else {
+      val availableTypes = getAvailableLicenseTypes().joinToString(", ")
+      throw GradleException(
+          "License header not found for type '$type'.\n" +
+              "Available values for licenseType: $availableTypes\n" +
+              "Hint: you can run './gradlew listAvailableLicenses' to see all options.")
+    }
   }
 
   private fun copy(source: File, target: File) {
@@ -207,10 +267,10 @@ class KeypopPlugin : Plugin<Project> {
         }
       }
       extension.repositories.maven { maven ->
-        maven.name = "keypopRepo"
+        maven.name = "keypleRepo"
         maven.credentials {
-          project.prop("ossrhUsername")?.let(it::setUsername)
-          project.prop("ossrhPassword")?.let(it::setPassword)
+          project.prop("centralUsername")?.let(it::setUsername)
+          project.prop("centralPassword")?.let(it::setPassword)
         }
         maven.url = project.uri(versioning.snapshotsRepo)
       }

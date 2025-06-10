@@ -7,7 +7,7 @@ import org.gradle.api.Project
 
 class KeypopVersioning {
 
-  var repoServer = "https://oss.sonatype.org"
+  var repoServer = "https://ossrh-staging-api.central.sonatype.com"
   var isAlreadyReleased = false
   val snapshotsRepo
     get() = "${repoServer}/content/repositories/snapshots/"
