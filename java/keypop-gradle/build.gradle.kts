@@ -7,6 +7,7 @@ plugins {
     kotlin("jvm") version "1.7.10" // Update Kotlin version to match Gradle's
     signing
     `maven-publish`
+    id("com.diffplug.spotless") version "6.25.0"
 }
 
 buildscript {
@@ -116,6 +117,12 @@ tasks {
         useJUnitPlatform()
         testLogging {
             events("passed", "skipped", "failed")
+        }
+    }
+    spotless {
+        kotlin {
+            target("**/*.kt")
+            ktfmt()
         }
     }
 }
