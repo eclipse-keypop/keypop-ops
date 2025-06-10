@@ -32,7 +32,7 @@ jobs:
       - name: Install gpg secret key
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-          gpg --export-secret-keys > ~/.gradle/maven-central.gpg
+          gpg --batch --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" --export-secret-keys > ~/.gradle/maven-central.gpg
 
       - name: Update permissions
         run: chmod +x ./gradlew
