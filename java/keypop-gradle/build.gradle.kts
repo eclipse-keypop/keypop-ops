@@ -44,8 +44,8 @@ val compileKotlin: KotlinCompile by tasks
 val compileTestKotlin: KotlinCompile by tasks
 val releaseRepo: String by project
 val snapshotRepo: String by project
-val ossrhUsername: String by project
-val ossrhPassword: String by project
+val sonatypeUsername: String by project
+val sonatypePassword: String by project
 
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
@@ -169,8 +169,8 @@ publishing {
     repositories {
         maven {
             credentials {
-                username = ossrhUsername
-                password = ossrhPassword
+                username = sonatypeUsername
+                password = sonatypePassword
             }
             if (version.toString().endsWith("-SNAPSHOT")) {
                 url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
