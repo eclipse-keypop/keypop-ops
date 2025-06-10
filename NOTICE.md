@@ -19,9 +19,9 @@ source code repository logs.
 ## Declared Project Licenses
 
 This program and the accompanying materials are made available under the terms
-of the MIT License which is available at
-https://opensource.org/license/mit/
+of the Eclipse Public License v. 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0.
 
-SPDX-License-Identifier: MIT
+SPDX-License-Identifier: EPL-2.0
 
 ## Third-party Content
