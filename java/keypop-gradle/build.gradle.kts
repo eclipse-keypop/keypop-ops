@@ -42,8 +42,7 @@ dependencies {
 
 val compileKotlin: KotlinCompile by tasks
 val compileTestKotlin: KotlinCompile by tasks
-val releaseRepo: String by project
-val snapshotRepo: String by project
+val sonatypeURL: String by project
 val sonatypeUsername: String by project
 val sonatypePassword: String by project
 
@@ -59,7 +58,7 @@ fun canBeUploaded(project: Project): Boolean {
     val jarGroup = (project.group as String).replace('.', '/')
     val jarName = "${project.name}-${project.version}.jar"
     val repositoryPath = "$jarGroup/${project.name}/${project.version}/$jarName"
-    val repositoryUrl = releaseRepo + repositoryPath
+    val repositoryUrl = sonatypeURL + repositoryPath
 
     val canBeUploaded = !urlExists(repositoryUrl)
     if (!canBeUploaded) {
