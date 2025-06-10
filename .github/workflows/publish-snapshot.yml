@@ -27,7 +27,7 @@ jobs:
           cat << EOF >> java/keypop-gradle/gradle.properties
           
           # Signing and publishing credentials (added by CI)
-          sonatypeURL=https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/
+          sonatypeURL=https://central.sonatype.com/repository/maven-snapshots/
           sonatypeUsername=${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
           sonatypePassword=${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
           signingInMemoryKey=${{ secrets.GPG_PRIVATE_KEY }}
