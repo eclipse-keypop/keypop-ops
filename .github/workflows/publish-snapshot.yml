@@ -37,6 +37,8 @@ jobs:
 
       - name: Update permissions
         run: chmod +x ./gradlew
+        working-directory: java/keypop-gradle
 
       - name: Build and Publish Snapshot
         run: ./gradlew build test publish --info --stacktrace
+        working-directory: java/keypop-gradle

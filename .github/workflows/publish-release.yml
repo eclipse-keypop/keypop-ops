@@ -34,6 +34,7 @@ jobs:
 
       - name: Update permissions
         run: chmod +x ./gradlew
+        working-directory: java/keypop-gradle
 
       - name: Set project version from tag
         run: |
@@ -42,5 +43,6 @@ jobs:
 
       - name: Build and Publish to Central
         run: ./gradlew build test publish --info --stacktrace
+        working-directory: java/keypop-gradle
         env:
           RELEASE_VERSION: ${{ github.event.release.tag_name }}
