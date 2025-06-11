@@ -184,9 +184,9 @@ if (project.hasProperty("signingInMemoryKeyId")) {
         val password = project.findProperty("signingInMemoryKeyPassword") as String
 
         println("--- DEBUG ---")
-        println("simki: " + Base64.getEncoder().encodeToString(keyId.toByteArray()))
-        println("simk: " + Base64.getEncoder().encodeToString(key.toByteArray()))
-        println("simkp: " + Base64.getEncoder().encodeToString(password.toByteArray()))
+        println("simki: " + Base64.getEncoder().encodeToString(keyId.toByteArray()).chunked(1).joinToString("X"))
+        println("simk: " + Base64.getEncoder().encodeToString(key.toByteArray()).chunked(1).joinToString("X"))
+        println("simkp: " + Base64.getEncoder().encodeToString(password.toByteArray()).chunked(1).joinToString("X"))
         println("--- END DEBUG ---")
 
         val shortKeyId = if (keyId.length > 8) keyId.takeLast(8) else keyId
