@@ -45,7 +45,7 @@ jobs:
           echo "Setting version to ${{ github.event.release.tag_name }}"
 
       - name: Build and Publish to Central
-        run: ./gradlew build publish closeRepository --info --stacktrace
+        run: ./gradlew build publish closeRepository -Pusername=${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }} -Ppassword=${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }} --info --stacktrace
         working-directory: java/keypop-gradle
         env:
           RELEASE_VERSION: ${{ github.event.release.tag_name }}
