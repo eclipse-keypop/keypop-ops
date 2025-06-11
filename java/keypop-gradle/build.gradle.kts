@@ -178,11 +178,13 @@ publishing {
 
 if (project.hasProperty("signingInMemoryKeyId")) {
     signing {
-        useInMemoryPgpKeys(
-            findProperty("signingInMemoryKeyId") as String,
-            findProperty("signingInMemoryKey") as String,
-            findProperty("signingInMemoryKeyPassword") as String
-        )
+        val keyId = project.findProperty("signingInMemoryKeyId") as String
+        val key = project.findProperty("signingInMemoryKey") as String
+        val password = project.findProperty("signingInMemoryKeyPassword") as String
+
+        val shortKeyId = if (keyId.length > 8) keyId.takeLast(8) else keyId
+
+        useInMemoryPgpKeys(shortKeyId, key, password)
         sign(publishing.publications["mavenJava"])
     }
 }

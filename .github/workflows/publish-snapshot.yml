@@ -21,23 +21,6 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Add signing credentials to gradle.properties
-        run: |
-          key_id="${{ secrets.GPG_KEY_ID }}"
-          key_id="${key_id: -8}"
-          
-          # Append credentials to existing project gradle.properties
-          cat << EOF >> java/keypop-gradle/gradle.properties
-          
-          # Signing and publishing credentials (added by CI)
-          sonatypeURL=https://central.sonatype.com/repository/maven-snapshots/
-          sonatypeUsername=${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
-          sonatypePassword=${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
-          signingInMemoryKey=${{ secrets.GPG_PRIVATE_KEY }}
-          signingInMemoryKeyId=$key_id
-          signingInMemoryKeyPassword=${{ secrets.GPG_PASSPHRASE }}
-          EOF
-
       - name: Add SNAPSHOT suffix to version
         run: |
           # Read current version and add -SNAPSHOT if not already present
@@ -47,13 +30,17 @@ jobs:
           fi
         working-directory: java/keypop-gradle
 
-      - name: Setup GPG (not needed for in-memory signing)
-        run: echo "Using in-memory GPG signing"
-
       - name: Update permissions
         run: chmod +x ./gradlew
         working-directory: java/keypop-gradle
 
       - name: Build and Publish Snapshot
+        env:
+          ORG_GRADLE_PROJECT_sonatypeURL: https://central.sonatype.com/repository/maven-snapshots/
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{secrets.GPG_KEY_ID}}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{secrets.GPG_PASSPHRASE}}
         run: ./gradlew build test publish --info --stacktrace
         working-directory: java/keypop-gradle
