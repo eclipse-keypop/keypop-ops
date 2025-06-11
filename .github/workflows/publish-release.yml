@@ -45,7 +45,7 @@ jobs:
           echo "Setting version to ${{ github.event.release.tag_name }}"
 
       - name: Build and Publish to Central
-        run: ./gradlew build publish closeSonatypeStagingRepository --info --stacktrace
+        run: ./gradlew build publish closeRepository --info --stacktrace
         working-directory: java/keypop-gradle
         env:
           RELEASE_VERSION: ${{ github.event.release.tag_name }}

@@ -7,6 +7,7 @@ plugins {
     kotlin("jvm") version "1.7.10" // Update Kotlin version to match Gradle's
     signing
     `maven-publish`
+    id("io.codearte.nexus-staging") version "0.30.0"
     id("com.diffplug.spotless") version "6.25.0"
 }
 
