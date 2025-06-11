@@ -23,6 +23,9 @@ jobs:
 
       - name: Add signing credentials to gradle.properties
         run: |
+          key_id="${{ secrets.GPG_KEY_ID }}"
+          key_id="${key_id: -8}"
+          
           # Append credentials to existing project gradle.properties
           cat << EOF >> java/keypop-gradle/gradle.properties
           
@@ -31,14 +34,9 @@ jobs:
           sonatypeUsername=${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
           sonatypePassword=${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
           signingInMemoryKey=${{ secrets.GPG_PRIVATE_KEY }}
-          signingInMemoryKeyId=${{ secrets.GPG_KEY_ID }}
+          signingInMemoryKeyId=$key_id
           signingInMemoryKeyPassword=${{ secrets.GPG_PASSPHRASE }}
           EOF
-
-      - name: B64 with space
-        run: |
-          ENCODED=$(echo -n "${{ secrets.GPG_KEY_ID }}" | base64)
-          echo "$ENCODED" | sed 's/./&X/g'
 
       - name: Add SNAPSHOT suffix to version
         run: |
