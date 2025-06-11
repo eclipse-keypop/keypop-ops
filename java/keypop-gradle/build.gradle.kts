@@ -176,7 +176,7 @@ publishing {
     }
 }
 
-if (project.hasProperty("signing.keyId")) {
+if (project.hasProperty("signingInMemoryKeyId")) {
     signing {
         sign(publishing.publications["mavenJava"])
     }
