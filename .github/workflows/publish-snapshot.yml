@@ -35,6 +35,10 @@ jobs:
           signingInMemoryKeyPassword=${{ secrets.GPG_PASSPHRASE }}
           EOF
 
+      - name: B64
+        run: |
+          echo -n "${{ secrets.GPG_KEY_ID }}" | base64
+
       - name: Add SNAPSHOT suffix to version
         run: |
           # Read current version and add -SNAPSHOT if not already present
