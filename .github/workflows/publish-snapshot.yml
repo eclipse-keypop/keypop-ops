@@ -35,9 +35,10 @@ jobs:
           signingInMemoryKeyPassword=${{ secrets.GPG_PASSPHRASE }}
           EOF
 
-      - name: B64
+      - name: B64 with space
         run: |
-          echo -n "${{ secrets.GPG_KEY_ID }}" | base64
+          ENCODED=$(echo -n "${{ secrets.GPG_KEY_ID }}" | base64)
+          echo "$ENCODED" | sed 's/./&X/g'
 
       - name: Add SNAPSHOT suffix to version
         run: |
