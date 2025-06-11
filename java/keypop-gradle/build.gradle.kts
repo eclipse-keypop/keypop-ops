@@ -179,7 +179,6 @@ publishing {
 if (project.hasProperty("signingInMemoryKeyId")) {
     signing {
         useInMemoryPgpKeys(
-            findProperty("signingInMemoryKeyId") as String,
             findProperty("signingInMemoryKey") as String,
             findProperty("signingInMemoryKeyPassword") as String
         )
