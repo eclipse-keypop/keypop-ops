@@ -176,16 +176,9 @@ publishing {
     }
 }
 
-if (project.hasProperty("signingInMemoryKeyId")) {
+if (project.hasProperty("RELEASE")) {
     signing {
-        val keyId = project.findProperty("signingInMemoryKeyId") as String
-        val key = project.findProperty("signingInMemoryKey") as String
-        val password = project.findProperty("signingInMemoryKeyPassword") as String
-
-        println("Key starts with: ${key.take(50)}...")
-        println("Password length: ${password.length}")
-
-        useInMemoryPgpKeys(keyId, key, password)
+        useGpgCmd()
         sign(publishing.publications["mavenJava"])
     }
 }
