@@ -63,29 +63,9 @@ jobs:
           echo "Building and publishing release package..."
           ./gradlew build publish --info --stacktrace
 
-      - name: Stage release in Sonatype repository
-        env:
-          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
-          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
+      - name: Trigger manual upload to Central Repository
         run: |
-          echo "Preparing authorization for Sonatype API..."
-          auth_header=$(echo "${ORG_GRADLE_PROJECT_sonatypeUsername}:${ORG_GRADLE_PROJECT_sonatypePassword}" | base64 -w 0)
-          
-          echo "Searching for opened staging repository..."
-          repository_response=$(curl -s -X GET \
-            -H "Authorization: Bearer ${auth_header}" \
-            "${{ env.SONATYPE_STAGING_URL }}/manual/search/repositories?state=open")
-          
-          repository_key=$(echo "${repository_response}" | grep -o '"key":"[^"]*"' | head -1 | cut -d':' -f2 | tr -d '"')
-          echo "Found repository key: ${repository_key}"
-          
-          if [ -n "${repository_key}" ]; then
-            echo "Triggering repository staging..."
-            curl -s -X POST \
-              -H "Authorization: Bearer ${auth_header}" \
-              "${{ env.SONATYPE_STAGING_URL }}/manual/upload/repository/${repository_key}?publishing_type=user_managed"
-            echo "Repository staging initiated successfully"
-          else
-            echo "Warning: No open repository found for staging"
-            exit 1
-          fi
+          curl -X POST \
+            -H "Authorization: Bearer $(echo -n '${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}:${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}' | base64)" \
+            -H "Content-Type: application/json" \
+            https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.eclipse.keypop
