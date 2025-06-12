@@ -27,18 +27,12 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.JAVA_DISTRIBUTION }}
 
-      - name: Setup GPG signing key
+      - name: Import GPG key
         id: gpg
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-        run: |
-          echo "Importing GPG private key..."
-          echo "${GPG_PRIVATE_KEY}" | gpg --batch --import --import-options import-show
-          
-          echo "Extracting GPG key ID..."
-          key_id=$(echo "${GPG_PRIVATE_KEY}" | gpg --batch --list-keys --with-colons | awk -F: '$1 == "sub" { print substr($5, length($5)-7, 8) }')
-          
-          echo "key_id=${key_id}" >> $GITHUB_OUTPUT
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Configure snapshot version
         working-directory: ${{ env.GRADLE_WORKING_DIR }}
@@ -65,7 +59,7 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypeURL: https://central.sonatype.com/repository/maven-snapshots/
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ steps.gpg.outputs.key_id }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ steps.gpg.outputs.keyid_short }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSPHRASE }}
         run: |
