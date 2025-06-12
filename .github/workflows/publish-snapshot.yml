@@ -27,13 +27,21 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.JAVA_DISTRIBUTION }}
 
+      - name: Retrieve fingerprint of the signing subkey
+        id: fingerprint
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" > private.key
+          gpg --batch --import private.key
+          fingerprint=$(gpg --list-keys --with-subkey-fingerprint --with-key-data KEY_ID | awk '/^      / { getline; print $1 }')
+          echo "fingerprint=$fingerprint" >> $GITHUB_OUTPUT
+
       - name: Import GPG key
         id: gpg
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          fingerprint: 39980C02B2800E4E8FAFB3FAC002756BA53946DE
+          fingerprint: ${{ steps.fingerprint.outputs.fingerprint }}
 
       - name: Configure snapshot version
         working-directory: ${{ env.GRADLE_WORKING_DIR }}
