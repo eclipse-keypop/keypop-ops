@@ -63,13 +63,6 @@ jobs:
           echo "Building and publishing release package..."
           ./gradlew build publish --info --stacktrace
 
-      - name: Trigger manual upload to Central Repository
-        run: |
-          curl -X POST \
-            -H "Authorization: Bearer $(echo -n '${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}:${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}' | base64)" \
-            -H "Content-Type: application/json" \
-            https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.eclipse.keypop
-
       - name: Stage release in Sonatype repository
         env:
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
@@ -96,3 +89,10 @@ jobs:
             echo "Warning: No open repository found for staging"
             exit 1
           fi
+
+      - name: Trigger manual upload to Central Repository
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer $(echo -n '${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}:${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}' | base64)" \
+            -H "Content-Type: application/json" \
+            https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.eclipse.keypop
