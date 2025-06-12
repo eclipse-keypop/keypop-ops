@@ -32,7 +32,7 @@ jobs:
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" > private.key
           gpg --batch --import private.key
-          fingerprint=$(gpg --list-keys --with-subkey-fingerprint --with-key-data KEY_ID | awk '/^      / { getline; print $1 }')
+          fingerprint=$(gpg --list-keys --with-subkey-fingerprint | awk '/^sub/ {getline; print $1}')
           echo "fingerprint=$fingerprint" >> $GITHUB_OUTPUT
 
       - name: Import GPG key
