@@ -7,6 +7,7 @@ plugins {
     kotlin("jvm") version "1.7.10" // Update Kotlin version to match Gradle's
     signing
     `maven-publish`
+    id("com.diffplug.spotless") version "6.25.0"
 }
 
 buildscript {
@@ -41,10 +42,9 @@ dependencies {
 
 val compileKotlin: KotlinCompile by tasks
 val compileTestKotlin: KotlinCompile by tasks
-val releaseRepo: String by project
-val snapshotRepo: String by project
-val ossrhUsername: String by project
-val ossrhPassword: String by project
+val sonatypeURL: String by project
+val sonatypeUsername: String by project
+val sonatypePassword: String by project
 
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
@@ -58,7 +58,7 @@ fun canBeUploaded(project: Project): Boolean {
     val jarGroup = (project.group as String).replace('.', '/')
     val jarName = "${project.name}-${project.version}.jar"
     val repositoryPath = "$jarGroup/${project.name}/${project.version}/$jarName"
-    val repositoryUrl = releaseRepo + repositoryPath
+    val repositoryUrl = sonatypeURL + repositoryPath
 
     val canBeUploaded = !urlExists(repositoryUrl)
     if (!canBeUploaded) {
@@ -118,6 +118,12 @@ tasks {
             events("passed", "skipped", "failed")
         }
     }
+    spotless {
+        kotlin {
+            target("**/*.kt")
+            ktfmt()
+        }
+    }
 }
 
 publishing {
@@ -136,8 +142,8 @@ publishing {
                 }
                 licenses {
                     license {
-                        name.set("MIT License")
-                        url.set("https://opensource.org/license/mit/")
+                        name.set("Eclipse Public License - v 2.0")
+                        url.set("https://www.eclipse.org/legal/epl-2.0/")
                         distribution.set("repo")
                     }
                 }
@@ -162,20 +168,24 @@ publishing {
     repositories {
         maven {
             credentials {
-                username = ossrhUsername
-                password = ossrhPassword
+                username = sonatypeUsername
+                password = sonatypePassword
             }
-            if (version.toString().endsWith("-SNAPSHOT")) {
-                url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
-            } else if (canBeUploaded(project)) {
-                url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-            }
+            url = uri(sonatypeURL)
         }
     }
 }
 
-if (project.hasProperty("signing.keyId")) {
+if (project.hasProperty("signingInMemoryKeyId")) {
     signing {
+        val keyId = project.findProperty("signingInMemoryKeyId") as String
+        val key = project.findProperty("signingInMemoryKey") as String
+        val password = project.findProperty("signingInMemoryKeyPassword") as String
+
+        println("Key starts with: ${key.take(50)}...")
+        println("Password length: ${password.length}")
+
+        useInMemoryPgpKeys(keyId, key, password)
         sign(publishing.publications["mavenJava"])
     }
 }

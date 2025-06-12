@@ -1,0 +1,91 @@
+name: Publish Release to Maven Central
+
+on:
+  release:
+    types: [published]
+
+env:
+  JAVA_VERSION: '21'
+  JAVA_DISTRIBUTION: 'temurin'
+  GRADLE_WORKING_DIR: java/keypop-gradle
+  SONATYPE_STAGING_URL: https://ossrh-staging-api.central.sonatype.com
+  SONATYPE_DEPLOY_URL: https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+
+      - name: Setup GPG signing key
+        id: gpg
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          echo "Importing GPG private key..."
+          echo "${GPG_PRIVATE_KEY}" | gpg --batch --import --import-options import-show
+          
+          echo "Extracting GPG key ID..."
+          key_id=$(echo "${GPG_PRIVATE_KEY}" | gpg --batch --list-keys --with-colons | awk -F: '$1 == "sub" { print substr($5, length($5)-7, 8) }')
+          
+          echo "key_id=${key_id}" >> $GITHUB_OUTPUT
+          echo "Using GPG key ID: ${key_id}"
+
+      - name: Make Gradle wrapper executable
+        working-directory: ${{ env.GRADLE_WORKING_DIR }}
+        run: chmod +x ./gradlew
+
+      - name: Set project version from release tag
+        run: |
+          release_version="${{ github.event.release.tag_name }}"
+          echo "VERSION=${release_version}" >> $GITHUB_ENV
+          echo "Setting project version to: ${release_version}"
+
+      - name: Build and publish release to Maven Central
+        working-directory: ${{ env.GRADLE_WORKING_DIR }}
+        env:
+          ORG_GRADLE_PROJECT_sonatypeURL: ${{ env.SONATYPE_DEPLOY_URL }}
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ steps.gpg.outputs.key_id }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSPHRASE }}
+          RELEASE_VERSION: ${{ github.event.release.tag_name }}
+        run: |
+          echo "Building and publishing release package..."
+          ./gradlew build publish --info --stacktrace
+
+      - name: Stage release in Sonatype repository
+        env:
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
+        run: |
+          echo "Preparing authorization for Sonatype API..."
+          auth_header=$(echo "${ORG_GRADLE_PROJECT_sonatypeUsername}:${ORG_GRADLE_PROJECT_sonatypePassword}" | base64 -w 0)
+          
+          echo "Searching for opened staging repository..."
+          repository_response=$(curl -s -X GET \
+            -H "Authorization: Bearer ${auth_header}" \
+            "${{ env.SONATYPE_STAGING_URL }}/manual/search/repositories?state=open")
+          
+          repository_key=$(echo "${repository_response}" | grep -o '"key":"[^"]*"' | head -1 | cut -d':' -f2 | tr -d '"')
+          echo "Found repository key: ${repository_key}"
+          
+          if [ -n "${repository_key}" ]; then
+            echo "Triggering repository staging..."
+            curl -s -X POST \
+              -H "Authorization: Bearer ${auth_header}" \
+              "${{ env.SONATYPE_STAGING_URL }}/manual/upload/repository/${repository_key}?publishing_type=user_managed"
+            echo "Repository staging initiated successfully"
+          else
+            echo "Warning: No open repository found for staging"
+            exit 1
+          fi
