@@ -1,3 +1,13 @@
+![Deprecated](https://img.shields.io/badge/status-deprecated-red)
+
+> ⚠️ **This project is deprecated.**
+
+This repository is no longer actively maintained.  
+All CI workflows have been migrated to centralized [GitHub Actions](https://github.com/eclipse-keypop/keypop-actions)
+for the entire Eclipse Keypop project family.
+
+You are encouraged to use or contribute to the centralized CI setup instead.
+
 # 'Eclipse Keypop' OPS   
 
 This is the repository for the Ops settings of the '[Eclipse Keypop](https://keypop.org/)' project.
